@@ -4,22 +4,27 @@
  * Module dependencies.
  */
 
-let app = require('../app.ts');
-let debug = require('debug')('meetion-backend:server');
-let http = require('http');
+import app from '../app';
+import Debug from 'debug';
+import { AddressInfo } from 'net';
+import { createServer } from 'http';
+
+import Logger from '../loaders/logger';
+
+const debug = Debug('meetion-backend:server');
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '8000');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
+const server = createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -33,8 +38,8 @@ server.on('listening', onListening);
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
-  let port = parseInt(val, 10);
+function normalizePort(val: string) {
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -53,14 +58,12 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError(error: { syscall: string; code: string }) {
   if (error.syscall !== 'listen') {
     throw error;
   }
 
-  let bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -82,9 +85,9 @@ function onError(error) {
  */
 
 function onListening() {
-  let addr = server.address();
-  let bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  const addr = server.address() as string | AddressInfo;
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
+
+  Logger.info(`✅ Server is listening on ${bind}`);
 }
