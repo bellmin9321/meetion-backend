@@ -12,4 +12,22 @@ pagesRouter.get('/', async (req, res) => {
   }
 });
 
+pagesRouter.post('/', async (req, res) => {
+  try {
+    const { creator, title, desc } = req.body;
+    const { _id } = await Page.create({
+      creator,
+      title,
+      desc,
+    });
+
+    res.status(201).json({ success: true, _id });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      errorMessage: 'Failed to create page',
+    });
+  }
+});
+
 export default pagesRouter;
