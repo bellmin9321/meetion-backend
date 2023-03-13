@@ -1,9 +1,13 @@
-import express from 'express';
-const router = express.Router();
+import { Express } from 'express';
 
-/* GET home page. */
-router.get('/', (req, res) => {
-  res.status(200).json({ message: 'home' });
-});
+import usersRouter from './users';
+import pagesRouter from './pages';
+import healthRouter from './health';
 
-export default router;
+const routesLoader = (app: Express) => {
+  app.use('/users', usersRouter);
+  app.use('/myPage', pagesRouter);
+  app.use('/health', healthRouter);
+};
+
+export default routesLoader;
