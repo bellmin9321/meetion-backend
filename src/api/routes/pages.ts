@@ -30,4 +30,19 @@ pagesRouter.post('/', async (req, res) => {
   }
 });
 
+pagesRouter.delete('/', async (req, res) => {
+  try {
+    console.log(req.body);
+    const { id } = req.body;
+    await Page.deleteOne({ _id: { $in: id } }).exec();
+
+    res.status(201).json({ success: true });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      errorMessage: 'Failed to create page',
+    });
+  }
+});
+
 export default pagesRouter;
