@@ -4,7 +4,10 @@ import { PageType } from '../../../types';
 
 const getPages = async (req: Request, res: Response) => {
   try {
-    const pages = await Page.find<PageType>({}).lean();
+    const { email } = req.query;
+
+    const pages = await Page.find<PageType>({ creator: email }).lean();
+
     res.status(200).json({ success: true, pages });
   } catch (err) {
     res.status(500).json({
