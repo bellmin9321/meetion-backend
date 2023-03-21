@@ -8,6 +8,7 @@ import app from '../app';
 import Debug from 'debug';
 import { AddressInfo } from 'net';
 import { createServer } from 'http';
+import onSocket from '../loaders/socket';
 
 import Logger from '../loaders/logger';
 
@@ -29,10 +30,11 @@ const server = createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+onSocket(server);
 
 /**
  * Normalize a port into a number, string, or false.

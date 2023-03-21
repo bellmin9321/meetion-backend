@@ -6,7 +6,7 @@ import logger from 'morgan';
 import errorHandler from '../api/middleware/errorHandler';
 import routesLoader from '../api/routes/index';
 
-const corsOptions = {
+export const corsOptions = {
   origin: '*',
   methods: 'GET, POST, PUT, PATCH, DELETE',
   credentials: true,
