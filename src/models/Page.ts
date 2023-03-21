@@ -4,7 +4,7 @@ import { PageType } from '../types';
 const pageSchema = new Schema<PageType>(
   {
     creator: { type: String },
-    title: { type: String, required: [true, 'title not specified'] },
+    title: { type: String },
     desc: { type: String },
   },
   { timestamps: true },
