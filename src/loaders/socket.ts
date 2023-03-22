@@ -26,7 +26,6 @@ const onSocket = (server: any) => {
       try {
         if (!page) return;
         const { _id, title, desc, creator } = page;
-        console.log(page);
 
         await Page.findOneAndUpdate(
           { _id: { $in: _id } },

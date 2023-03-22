@@ -4,11 +4,13 @@ import {
   deletePage,
   editPage,
   getPages,
+  getSharedPages,
 } from './controllers/pages';
 const pagesRouter = express.Router();
 
 pagesRouter
   .get('/', getPages)
+  .get('/shared', getSharedPages)
   .post('/', createPage)
   .delete('/', deletePage)
   .patch('/', editPage);

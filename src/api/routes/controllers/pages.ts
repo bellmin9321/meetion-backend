@@ -17,6 +17,24 @@ const getPages = async (req: Request, res: Response) => {
   }
 };
 
+const getSharedPages = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.query;
+
+    const sharedPages = await Page.find<PageType>({
+      sharedUsers: email,
+    }).lean();
+    console.log('sharedPages', sharedPages);
+
+    res.status(200).json({ success: true, sharedPages });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      errorMessage: 'Failed to get pages',
+    });
+  }
+};
+
 const createPage = async (req: Request, res: Response) => {
   try {
     const { creator, title, desc } = req.body;
@@ -66,4 +84,4 @@ const editPage = async (req: Request, res: Response) => {
   }
 };
 
-export { getPages, createPage, deletePage, editPage };
+export { getPages, getSharedPages, createPage, deletePage, editPage };
