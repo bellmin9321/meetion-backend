@@ -5,6 +5,7 @@ export interface PageType {
   creator: string;
   title: string;
   desc: string;
+  sharedUsers: string[];
 }
 
 export interface UserType {
