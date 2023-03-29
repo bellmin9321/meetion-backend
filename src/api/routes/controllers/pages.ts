@@ -24,13 +24,12 @@ const getSharedPages = async (req: Request, res: Response) => {
     const sharedPages = await Page.find<PageType>({
       sharedUsers: email,
     }).lean();
-    console.log('sharedPages', sharedPages);
 
     res.status(200).json({ success: true, sharedPages });
   } catch (err) {
     res.status(500).json({
       success: false,
-      errorMessage: 'Failed to get pages',
+      errorMessage: 'Failed to get sharedPages',
     });
   }
 };
@@ -38,6 +37,7 @@ const getSharedPages = async (req: Request, res: Response) => {
 const createPage = async (req: Request, res: Response) => {
   try {
     const { creator, title, desc } = req.body;
+
     const { _id } = await Page.create({
       creator,
       title,
@@ -56,13 +56,13 @@ const createPage = async (req: Request, res: Response) => {
 const deletePage = async (req: Request, res: Response) => {
   try {
     const { id } = req.body;
-    await Page.deleteOne({ _id: { $in: id } }).exec();
+    await Page.deleteOne({ _id: { $in: id } }).lean();
 
     res.status(201).json({ success: true });
   } catch (err) {
     res.status(500).json({
       success: false,
-      errorMessage: 'Failed to create page',
+      errorMessage: 'Failed to delete page',
     });
   }
 };
@@ -73,7 +73,7 @@ const editPage = async (req: Request, res: Response) => {
     await Page.findOneAndUpdate(
       { _id: { $in: _id } },
       { $set: { title, desc } },
-    ).exec();
+    ).lean();
 
     res.status(201).json({ success: true });
   } catch (err) {
@@ -84,4 +84,39 @@ const editPage = async (req: Request, res: Response) => {
   }
 };
 
-export { getPages, getSharedPages, createPage, deletePage, editPage };
+const addSharedEmail = async (req: Request, res: Response) => {
+  try {
+    const { _id, email } = req.body;
+    const { sharedUsers } = await Page.findOne<PageType>({
+      _id,
+    }).lean();
+
+    if (sharedUsers.includes(email)) {
+      return res.status(500).json({
+        success: false,
+        errorMessage: 'The same email exists',
+      });
+    }
+
+    const data = await Page.findOneAndUpdate(
+      { _id: { $in: _id } },
+      { $push: { sharedUsers: email } },
+    ).lean();
+
+    res.status(201).json({ success: true, data });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      errorMessage: 'Failed to create page',
+    });
+  }
+};
+
+export {
+  getPages,
+  getSharedPages,
+  createPage,
+  deletePage,
+  editPage,
+  addSharedEmail,
+};
