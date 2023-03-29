@@ -12,9 +12,11 @@ const onSocket = (server: any) => {
   });
 
   io.on('connection', (socket) => {
+    console.log(`${socket.id} user connected`);
     Logger.info(`✅ Socket is listening on ${process.env.PORT}`);
 
     socket.on('disconnect', () => {
+      socket.removeAllListeners();
       console.log('클라이언트 접속 해제', socket.id);
     });
 
@@ -34,12 +36,26 @@ const onSocket = (server: any) => {
 
         const pages = await Page.find<PageType>({ creator }).lean();
 
-        socket.emit('edit-page', { pages });
         socket.join(String(_id));
+        socket.emit('edit-page', { pages });
       } catch (err) {
         console.log(err);
       }
     });
+
+    socket.on('shared-page', (page: PageType) => {
+      if (!page) return;
+      const { _id, title, desc } = page;
+
+      socket.broadcast.emit('receive-changes', { _id, title, desc });
+    });
+
+    socket.on(
+      'get-position',
+      (info: { image: string; email: string; posY: string }) => {
+        socket.broadcast.emit('pos-changes', info);
+      },
+    );
   });
 };
 
