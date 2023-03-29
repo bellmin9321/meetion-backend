@@ -2,7 +2,6 @@ import express from 'express';
 import {
   createPage,
   deletePage,
-  editPage,
   getPages,
   getSharedPages,
   addSharedEmail,
