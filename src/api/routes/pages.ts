@@ -5,6 +5,7 @@ import {
   editPage,
   getPages,
   getSharedPages,
+  addSharedEmail,
 } from './controllers/pages';
 const pagesRouter = express.Router();
 
@@ -13,6 +14,6 @@ pagesRouter
   .get('/shared', getSharedPages)
   .post('/', createPage)
   .delete('/', deletePage)
-  .patch('/', editPage);
+  .patch('/', addSharedEmail);
 
 export default pagesRouter;

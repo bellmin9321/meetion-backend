@@ -16,6 +16,7 @@ userRouter.get('/', async (req: Request, res: Response) => {
 userRouter.post('/', async (req: Request, res: Response) => {
   try {
     const { email, image, name } = req.body;
+
     const result = await User.findOneAndUpdate({ email }, { upsert: true });
 
     if (!result) {
