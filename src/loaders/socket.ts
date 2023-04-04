@@ -67,7 +67,7 @@ const onSocket = (server: any) => {
       'shared-page',
       debounce(async (page: PageType) => {
         if (!page) return;
-        const { _id, title, desc, editor } = page;
+        const { _id, title, desc } = page;
 
         await Page.findOneAndUpdate(
           { _id: { $in: _id } },
@@ -77,7 +77,7 @@ const onSocket = (server: any) => {
         socket.join(String(_id));
         socket.broadcast
           .to(String(_id))
-          .emit('receive-changes', { _id, title, desc, editor });
+          .emit('receive-changes', { _id, title, desc });
       }, 800),
     );
 
