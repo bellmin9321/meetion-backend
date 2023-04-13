@@ -63,28 +63,27 @@ const onSocket = (server: any) => {
       }
     });
 
-    socket.on(
-      'shared-page',
-      debounce(async (page: PageType) => {
-        if (!page) return;
-        const { _id, title, desc } = page;
+    socket.on('shared-page', async (page: PageType) => {
+      if (!page) return;
+      const { _id, title, desc } = page;
 
-        await Page.findOneAndUpdate(
-          { _id: { $in: _id } },
-          { $set: { title, desc } },
-        ).lean();
+      await Page.findOneAndUpdate(
+        { _id: { $in: _id } },
+        { $set: { title, desc } },
+      ).lean();
 
-        socket.join(String(_id));
-        socket.broadcast
-          .to(String(_id))
-          .emit('receive-changes', { _id, title, desc });
-      }, 800),
-    );
+      socket.join(String(_id));
+      socket.broadcast
+        .to(String(_id))
+        .emit('receive-changes', { _id, title, desc });
+    });
 
+    // 유저 profile 위치(y좌표) 통신
     socket.on(
       'get-position',
       (info: { id: string; image: string; email: string; posY: string }) => {
         socket.join(String(info.id));
+
         socket.broadcast.to(String(info.id)).emit('pos-changes', info);
       },
     );
