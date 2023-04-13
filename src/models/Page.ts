@@ -6,7 +6,7 @@ const pageSchema = new Schema<PageType>(
     creator: { type: String, required: [true, 'Creator is required'] },
     title: { type: String },
     desc: { type: String },
-    sharedUsers: { type: [String] },
+    sharedUsers: { type: [String], _id: false },
   },
   { timestamps: true },
 );
