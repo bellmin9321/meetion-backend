@@ -29,7 +29,7 @@ const getSharedPages = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      errorMessage: 'Failed to get sharedPages',
+      errorMessage: 'Failed to get shared pages',
     });
   }
 };
@@ -79,7 +79,7 @@ const editPage = async (req: Request, res: Response) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      errorMessage: 'Failed to create page',
+      errorMessage: 'Failed to edit page',
     });
   }
 };
@@ -102,12 +102,37 @@ const addSharedEmail = async (req: Request, res: Response) => {
       { _id: { $in: _id } },
       { $push: { sharedUsers: email } },
     ).lean();
+    console.log(data);
 
     res.status(201).json({ success: true, data });
   } catch (err) {
     res.status(500).json({
       success: false,
-      errorMessage: 'Failed to create page',
+      errorMessage: 'Failed to invite email',
+    });
+  }
+};
+
+const deleteSharedEmail = async (req: Request, res: Response) => {
+  try {
+    const { _id, email } = req.body;
+
+    const data = await Page.findOneAndUpdate(
+      { _id: { $in: _id } },
+      { $pull: { sharedUsers: email } },
+    ).lean();
+    console.log(data);
+
+    // const target = await Page.findOne<PageType>({
+    //   _id,
+    // }).lean();
+    // console.log(target);
+
+    res.status(201).json({ success: true });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      errorMessage: 'Failed to delete shared email',
     });
   }
 };
@@ -119,4 +144,5 @@ export {
   deletePage,
   editPage,
   addSharedEmail,
+  deleteSharedEmail,
 };
