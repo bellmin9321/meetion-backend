@@ -88,6 +88,10 @@ const onSocket = (server: any) => {
       },
     );
 
+    socket.on('send-textareaHeight', (height) => {
+      socket.broadcast.emit('get-textareaHeight', height);
+    });
+
     // WebRTC
     socket.on('join_room', (data) => {
       // 방이 기존에 생성되어 있다면
