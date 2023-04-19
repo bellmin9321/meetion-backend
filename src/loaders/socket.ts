@@ -64,18 +64,22 @@ const onSocket = (server: any) => {
     });
 
     socket.on('shared-page', async (page: PageType) => {
-      if (!page) return;
-      const { _id, title, desc } = page;
+      try {
+        if (!page) return;
+        const { _id, title, desc, writingUser } = page;
 
-      await Page.findOneAndUpdate(
-        { _id: { $in: _id } },
-        { $set: { title, desc } },
-      ).lean();
+        await Page.findOneAndUpdate(
+          { _id: { $in: _id } },
+          { $set: { title, desc } },
+        ).lean();
 
-      socket.join(String(_id));
-      socket.broadcast
-        .to(String(_id))
-        .emit('receive-changes', { _id, title, desc });
+        socket.join(String(_id));
+        socket.broadcast
+          .to(String(_id))
+          .emit('receive-changes', { _id, title, desc, writer: writingUser });
+      } catch (error) {
+        socket.broadcast.emit('receive-changes', error);
+      }
     });
 
     // 유저 profile 위치(y좌표) 통신

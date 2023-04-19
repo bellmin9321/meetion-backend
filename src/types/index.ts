@@ -6,6 +6,7 @@ export interface PageType {
   title: string;
   desc: string;
   sharedUsers: string[];
+  writingUser: string;
 }
 
 export interface UserType {
